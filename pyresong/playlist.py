@@ -12,7 +12,9 @@ class PlayList(object):
 
     def __new__(cls, *args, **kwargs):
         """ Create an empty PlayList instance."""
-        return super(PlayList, cls).__new__(cls, *args, **kwargs)
+        instance = super(PlayList, cls).__new__(cls, *args, **kwargs)
+        instance.Items = []
+        return instance
 
     def __init__(self):
         """
