@@ -1,10 +1,10 @@
 from .playlist import PlayList
 from os.path import isfile, isdir, dirname, basename, splitext
 from os import makedirs, getcwd
-from os import name as osname
+from platform import system as plsys
 
 _SEPARATOR = '/'
-if osname.lower() == 'nt':
+if plsys().lower() == 'windows':
     _SEPARATOR = '\\'
 
 def load(path):
