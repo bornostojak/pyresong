@@ -44,7 +44,7 @@ class PlayItem(object):
         """
 
         try:
-            return "<PlayItem>\n"+''.join([f"<{str(key)}>{str(val)}</{str(key)}>\n" if str(val).lower() != "none" else f"<{str(key)}/>\n" for key, val in self.__dict__.items()])+"</PlayItem>"
+            return "<PlayItem>\n"+''.join([f"<{str(key)}>{str(val)}</{str(key)}>\n" if str(val).lower() != "none" else f"<{str(key)}/>\n" for key, val in self.__dict__.items()])+"</PlayItem>".replace('\\', '\\\\')
         except:
             return ""
 
@@ -81,6 +81,8 @@ class PlayItem(object):
                     continue
                 elif str(self.__dict__[key]).lower() != "none":
                     self.__dict__[key] = eval(self.__dict__[key])
+                    if type(self.__dict__[key]) is float:
+                        self.__dict__[key] = round(self.__dict__[key], 4)
             except:
                 pass
 
