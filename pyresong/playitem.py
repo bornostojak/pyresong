@@ -170,6 +170,7 @@ class PlayItem(object):
                 temp.OriginalEndCue = temp.EndCue
                 temp.Naziv = splitext(basename(path))[0]
                 temp.PathName = path
+                temp.Tip = 101
         except:
             pass
 
