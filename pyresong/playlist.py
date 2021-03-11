@@ -12,6 +12,8 @@ class PlayList(object):
     Object containing multiple PlayItems and supporting functions for playlist simple playlist manipulation.
     """
 
+    DEFAULT_FRAGMENT_ACTIVATOR = '.'
+
     def __new__(cls, *args, **kwargs):
         """ Create an empty PlayList instance."""
         instance = super(PlayList, cls).__new__(cls, *args, **kwargs)
@@ -67,42 +69,42 @@ class PlayList(object):
     def __getitem__(self, key):
         return self.Items[key]
     
-    def first(self, string, caps_sensitive=False, fragment_indicator=DEFAULT_FRAGMENT_INDICATOR):
+    def first(self, string, caps_sensitive=False, fragment_activator=DEFAULT_FRAGMENT_ACTIVATOR):
         """
         Search first item in the playlist if the string can be found in its Naziv, Autor, Album, Info or PathName.
         Returns the first item found.
         
         Fragmented => the string is split by spaces, and each "fragments" is used as a search word
-        To search by fragments define a "fragment_indicator" (default is ".")
+        To search by fragments define a "fragment_activator" (default is ".")
         """
 
         #TODO: try/except
-        return self.searchall(string, caps_sensitive, fragment_indicator)[0]
+        return self.searchall(string, caps_sensitive, fragment_activator)[0]
 
-    def search(self, string, caps_sensitive=False, fragment_indicator=DEFAULT_FRAGMENT_INDICATOR):
+    def search(self, string, caps_sensitive=False, fragment_activator=DEFAULT_FRAGMENT_ACTIVATOR):
         """
         Search all items in the playlist if the string can be found in its Naziv, Autor, Album, Info or PathName.
         Returns all items containing that string.
         
         Fragmented => the string is split by spaces, and each "fragments" is used as a search word
-        To search by fragments define a "fragment_indicator" (default is ".")
+        To search by fragments define a "fragment_activator" (default is ".")
         """
 
         #TODO: try/except
-        return [i for i in self.searchall_iter(string, caps_sensitive, fragment_indicator)]
+        return [i for i in self.searchall_iter(string, caps_sensitive, fragment_activator)]
 
-    def search_iter(self, string, caps_sensitive=False, fragment_indicator=DEFAULT_FRAGMENT_INDICATOR):
+    def search_iter(self, string, caps_sensitive=False, fragment_activator=DEFAULT_FRAGMENT_ACTIVATOR):
         """
         Iteratively search all items in the playlist if the string can be found in its Naziv, Autor, Album, Info or PathName.
         Returns generator with all items containing that string.
         
         Fragmented => the string is split by spaces, and each "fragments" is used as a search word
-        To search by fragments define a "fragment_indicator" (default is ".")
+        To search by fragments define a "fragment_activator" (default is ".")
         """
         fragment = False
-        if string.startswith(fragment_indicator):
+        if string.startswith(fragment_activator):
             fragment = True
-            string = string[len(fragment_indicator):]
+            string = string[len(fragment_activator):]
         string = string if caps_sensitive else string.lower()
         fragmented = string.split() if fragment else [string]
         for i in self.Items:
