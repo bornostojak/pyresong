@@ -79,7 +79,7 @@ class PlayList(object):
         """
 
         #TODO: try/except
-        return self.searchall(string, caps_sensitive, fragment_activator)[0]
+        return self.search(string, caps_sensitive, fragment_activator)[0]
 
     def search(self, string, caps_sensitive=False, fragment_activator=DEFAULT_FRAGMENT_ACTIVATOR):
         """
@@ -91,7 +91,7 @@ class PlayList(object):
         """
 
         #TODO: try/except
-        return [i for i in self.searchall_iter(string, caps_sensitive, fragment_activator)]
+        return [i for i in self.search_iter(string, caps_sensitive, fragment_activator)]
 
     def search_iter(self, string, caps_sensitive=False, fragment_activator=DEFAULT_FRAGMENT_ACTIVATOR):
         """
