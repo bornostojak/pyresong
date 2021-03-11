@@ -1,6 +1,5 @@
 from datetime import datetime as dt
 from xml.etree import ElementTree as ElementTree
-from xml.sax import saxutils as sax
 from datetime import timedelta
 from collections import OrderedDict
 from json import dumps
@@ -88,7 +87,7 @@ class PlayItem(object):
             except:
                 place = self.__dict__[key]
                 if type(place) is str:
-                    place = sax.escape(place)
+                    place = place.replace('&', '&amp;')  #fixes issue with win paths
                 self.__dict__[key] = place
 
 

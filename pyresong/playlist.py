@@ -5,6 +5,8 @@ from datetime import timedelta
 from .playitem import PlayItem
 from os.path import isfile
 
+
+
 class PlayList(object):
     """
     Object containing multiple PlayItems and supporting functions for playlist simple playlist manipulation.
@@ -65,6 +67,49 @@ class PlayList(object):
     def __getitem__(self, key):
         return self.Items[key]
     
+    def first(self, string, caps_sensitive=False, fragment_indicator=DEFAULT_FRAGMENT_INDICATOR):
+        """
+        Search first item in the playlist if the string can be found in its Naziv, Autor, Album, Info or PathName.
+        Returns the first item found.
+        
+        Fragmented => the string is split by spaces, and each "fragments" is used as a search word
+        To search by fragments define a "fragment_indicator" (default is ".")
+        """
+
+        #TODO: try/except
+        return self.searchall(string, caps_sensitive, fragment_indicator)[0]
+
+    def search(self, string, caps_sensitive=False, fragment_indicator=DEFAULT_FRAGMENT_INDICATOR):
+        """
+        Search all items in the playlist if the string can be found in its Naziv, Autor, Album, Info or PathName.
+        Returns all items containing that string.
+        
+        Fragmented => the string is split by spaces, and each "fragments" is used as a search word
+        To search by fragments define a "fragment_indicator" (default is ".")
+        """
+
+        #TODO: try/except
+        return [i for i in self.searchall_iter(string, caps_sensitive, fragment_indicator)]
+
+    def search_iter(self, string, caps_sensitive=False, fragment_indicator=DEFAULT_FRAGMENT_INDICATOR):
+        """
+        Iteratively search all items in the playlist if the string can be found in its Naziv, Autor, Album, Info or PathName.
+        Returns generator with all items containing that string.
+        
+        Fragmented => the string is split by spaces, and each "fragments" is used as a search word
+        To search by fragments define a "fragment_indicator" (default is ".")
+        """
+        fragment = False
+        if string.startswith(fragment_indicator):
+            fragment = True
+            string = string[len(fragment_indicator):]
+        string = string if caps_sensitive else string.lower()
+        fragmented = string.split() if fragment else [string]
+        for i in self.Items:
+            params = [str(u) if caps_sensitive else str(u).lower() for u in [i.Naziv, i.Autor, i.Album, i.Info, i.PathName]]
+            if True in [ True in [f in x for f in fragmented] for x in params]:
+                yield i
+
     @classmethod
     def fromxml(cls, xmltree):
         """
@@ -142,3 +187,6 @@ class PlayList(object):
         Returns a XML string representation of the PlayList.
         """
         return str(playlist)
+
+
+
