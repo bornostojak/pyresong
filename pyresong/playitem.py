@@ -1,5 +1,6 @@
 from datetime import datetime as dt
 from xml.etree import ElementTree as ElementTree
+from xml.sax import saxutils as sax
 from datetime import timedelta
 from collections import OrderedDict
 from json import dumps
@@ -80,11 +81,16 @@ class PlayItem(object):
                 elif 'Color' == key:
                     continue
                 elif str(self.__dict__[key]).lower() != "none":
-                    self.__dict__[key] = eval(self.__dict__[key])
-                    if type(self.__dict__[key]) is float:
-                        self.__dict__[key] = round(self.__dict__[key], 4)
+                    place = eval(self.__dict__[key])
+                    #if type(place) is float:
+                    #    place = round(place, 4)
+                    self.__dict__[key] = place
             except:
-                pass
+                place = self.__dict__[key]
+                if type(place) is str:
+                    print(place)
+                    place = sax.escape(place)
+                self.__dict__[key] = place
 
 
     @property
