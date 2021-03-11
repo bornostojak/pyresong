@@ -88,7 +88,6 @@ class PlayItem(object):
             except:
                 place = self.__dict__[key]
                 if type(place) is str:
-                    print(place)
                     place = sax.escape(place)
                 self.__dict__[key] = place
 
