@@ -69,6 +69,37 @@ class PlayList(object):
     def __getitem__(self, key):
         return self.Items[key]
     
+    def find(self, string, caps_sensitive=False, fragment_activator=DEFAULT_FRAGMENT_ACTIVATOR):
+        """
+        Find all items in the playlist if the string can be found in its Naziv, Autor, Album, Info or PathName.
+        Returns generator with indexes of all items containing that string.
+        
+        Fragmented => the string is split by spaces, and each "fragments" is used as a search word
+        To search by fragments define a "fragment_activator" (default is ".")
+        """
+        return [i for i in self.find_iter(string, caps_sensitive, fragment_activator)]
+
+    def find_iter(self, string, caps_sensitive=False, fragment_activator=DEFAULT_FRAGMENT_ACTIVATOR):
+        """
+        Iteratively find all items in the playlist if the string can be found in its Naziv, Autor, Album, Info or PathName.
+        Returns generator with indexes of all items containing that string.
+        
+        Fragmented => the string is split by spaces, and each "fragments" is used as a search word
+        To search by fragments define a "fragment_activator" (default is ".")
+        """
+        fragment = False
+        if string.startswith(fragment_activator):
+            fragment = True
+            string = string[len(fragment_activator):]
+        string = string if caps_sensitive else string.lower()
+        fragmented = string.split() if fragment else [string]
+        loc=-1
+        for i in self.Items:
+            loc+=1
+            params = [str(u) if caps_sensitive else str(u).lower() for u in [i.Naziv, i.Autor, i.Album, i.Info, i.PathName]]
+            if True in [ True in [f in x for f in fragmented] for x in params]:
+                yield loc
+
     def first(self, string, caps_sensitive=False, fragment_activator=DEFAULT_FRAGMENT_ACTIVATOR):
         """
         Search first item in the playlist if the string can be found in its Naziv, Autor, Album, Info or PathName.
@@ -101,16 +132,8 @@ class PlayList(object):
         Fragmented => the string is split by spaces, and each "fragments" is used as a search word
         To search by fragments define a "fragment_activator" (default is ".")
         """
-        fragment = False
-        if string.startswith(fragment_activator):
-            fragment = True
-            string = string[len(fragment_activator):]
-        string = string if caps_sensitive else string.lower()
-        fragmented = string.split() if fragment else [string]
-        for i in self.Items:
-            params = [str(u) if caps_sensitive else str(u).lower() for u in [i.Naziv, i.Autor, i.Album, i.Info, i.PathName]]
-            if True in [ True in [f in x for f in fragmented] for x in params]:
-                yield i
+        for index in self.find_iter(string, caps_sensitive, fragment_activator):
+            yield self.Items[index]
 
     @classmethod
     def fromxml(cls, xmltree):
