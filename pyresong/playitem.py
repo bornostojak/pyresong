@@ -73,22 +73,18 @@ class PlayItem(object):
         return self.__dict__[key]
     
     def _convert_attributes(self):
-        for key in list(self.__dict__):
+        for key, val in self.__dict__.items():
             try:
                 if 'Vrijeme'.lower() in key.lower():
-                    self.__dict__[key] = Date.fromisoformat(self.__dict__[key])
+                    val = Date.fromisoformat(val.replace('Z', ''))
                 elif 'Color' == key:
                     continue
-                elif str(self.__dict__[key]).lower() != "none":
-                    place = eval(self.__dict__[key])
-                    #if type(place) is float:
-                    #    place = round(place, 4)
-                    self.__dict__[key] = place
+                elif str(val).lower() != "none":
+                    val = eval(val)
             except:
-                place = self.__dict__[key]
-                if type(place) is str:
-                    place = place.replace('&', '&amp;')  #fixes issue with win paths
-                self.__dict__[key] = place
+                if type(val) is str:
+                    val = val.replace('&', '&amp;')  #fixes issue with win paths
+            self.__dict__[key] = val
 
 
     @property
