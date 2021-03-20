@@ -34,7 +34,7 @@ class PlayItem(object):
         if type(data) is dict :
             try:
                 self.__dict__ = {key:val for key,val in tuple(data.items()) if key in self.__dict__.keys()}
-            except:
+            except Exception:
                 raise ValueError('The object contains invalid PlayItem data!')
             self._convert_attributes()
 
@@ -45,7 +45,7 @@ class PlayItem(object):
 
         try:
             return "<PlayItem>\n"+''.join([f"<{str(key)}>{str(val)}</{str(key)}>\n" if str(val).lower() != "none" else f"<{str(key)}/>\n" for key, val in self.__dict__.items()])+"</PlayItem>".replace('\\', '\\\\')
-        except:
+        except Exception:
             return ""
 
     def __repr__(self):
@@ -57,7 +57,7 @@ class PlayItem(object):
 
         try:
             return f"{self.Naziv+' by '+self.Autor if self.Autor else self.Naziv} @ {self.Vrijeme}"
-        except:
+        except Exception:
             return "Empty item."
 
     def keys(self):
@@ -81,7 +81,7 @@ class PlayItem(object):
                     continue
                 elif str(val).lower() != "none":
                     val = eval(val)
-            except:
+            except Exception:
                 if type(val) is str:
                     val = val.replace('&', '&amp;')  #fixes issue with win paths
             self.__dict__[key] = val
@@ -117,7 +117,7 @@ class PlayItem(object):
         if xmlitem.__class__ is str:
             try:
                 xmlitem = ElementTree.fromstring(xmlitem)
-            except:
+            except Exception:
                 raise TypeError('The XML string doesn\'t contain valid PlayItem data')
 
         if xmlitem.__class__ is not ElementTree.Element:
@@ -129,7 +129,7 @@ class PlayItem(object):
                 self.__dict__[xmlitem[i].tag] = xmlitem[i].text
             self._convert_attributes()
                 
-        except:
+        except Exception:
             raise KeyError('The PlayItem values are incorrect or missing!')
         return self
     
@@ -153,7 +153,7 @@ class PlayItem(object):
             for key in self.__dict__.keys():
                 self.__dict__[key] = data[key]
             self._convert_attributes()
-        except:
+        except Exception:
             raise KeyError('The PlayItem values are incorrect or missing!')
         
         return self
@@ -171,7 +171,7 @@ class PlayItem(object):
                 temp.Naziv = splitext(basename(path))[0]
                 temp.PathName = path
                 temp.Tip = 101
-        except:
+        except Exception:
             pass
 
         return temp

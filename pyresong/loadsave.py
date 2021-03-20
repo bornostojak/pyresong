@@ -15,7 +15,7 @@ def load(path):
     try:
         with open(path, 'rb') as file:
             pl = PlayList.frompath(path)
-    except:
+    except Exception:
         raise ValueError('Make sure the file is not corrupt or missing')
 
     return pl

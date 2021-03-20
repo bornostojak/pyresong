@@ -35,7 +35,7 @@ class PlayList(object):
         try:
             for i in self.Items:
                 tmp+=str(i)+"\n"
-        except:
+        except Exception:
             pass
         return f"<PlayList>\n{tmp}</PlayList>"
      
@@ -48,10 +48,10 @@ class PlayList(object):
 
         try:
             return f"Playlist from {self.Items[0].Vrijeme} to {self.Items[len(self.Items)-1].EndOfSongTime}"
-        except:
+        except Exception:
             try:
                 return f"Playlist from {self.Items[0].Vrijeme}"
-            except:
+            except Exception:
                 return "Empty playlist."
      
     def __iter__(self):
@@ -146,7 +146,7 @@ class PlayList(object):
         if xmltree.__class__ is str:
             try:
                 xmltree= ElementTree.fromstring(xmltree)
-            except:
+            except Exception:
                 raise TypeError('The XML string doesn\'t contain valid PlayList data')
 
         elif xmltree.__class__ is not ElementTree.Element:
