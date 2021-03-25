@@ -44,7 +44,7 @@ class PlayItem(object):
         """
 
         try:
-            return "<PlayItem>\n"+''.join([f"<{str(key)}>{str(val)}</{str(key)}>\n" if str(val).lower() != "none" else f"<{str(key)}/>\n" for key, val in self.__dict__.items()])+"</PlayItem>".replace('\\', '\\\\')
+            return "<PlayItem>\n"+''.join([f"<{str(key)}>{str(val).replace('&', '&amp;')}</{str(key)}>\n" if str(val).lower() != "none" else f"<{str(key)}/>\n" for key, val in self.__dict__.items()])+"</PlayItem>".replace('\\', '\\\\')
         except Exception:
             return ""
 
@@ -82,8 +82,9 @@ class PlayItem(object):
                 elif str(val).lower() != "none":
                     val = eval(val)
             except Exception:
-                if type(val) is str:
-                    val = val.replace('&', '&amp;')  #fixes issue with win paths
+                pass
+                #if type(val) is str:
+                    #val = val.replace('&', '&amp;')  #fixes issue with win paths
             self.__dict__[key] = val
 
 

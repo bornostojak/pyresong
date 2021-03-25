@@ -97,7 +97,7 @@ class PlayList(object):
         for i in self.Items:
             loc+=1
             params = [str(u) if caps_sensitive else str(u).lower() for u in [i.Naziv, i.Autor, i.Album, i.Info, i.PathName]]
-            if True in [ True in [f in x for f in fragmented] for x in params]:
+            if True in ( True in [f in x for f in fragmented] for x in params):
                 yield loc
 
     def first(self, string, caps_sensitive=False, fragment_activator=DEFAULT_FRAGMENT_ACTIVATOR):
