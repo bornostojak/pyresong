@@ -29,13 +29,12 @@ class PlayItem(object):
         Can also parse from a dictionary of its items.
 
         """
-        if type(data) is PlayItem:
-            data=data.clone()
         if data:
+            data=dict(data)
+            if set(data) - set(self.__dict__):
+                raise ValueError('The data passed to the item is invalid')
             try:
-                DATA = dict(data)
-                DATA_KEYS = DATA.keys()
-                self.__dict__= {key: DATA[key] if key in DATA_KEYS else val for key,val in self.__dict__.items()}
+                self.__dict__.update({key:val for key,val in dict(data).items() if key in self.__dict__})
                 self._convert_attributes()
             except Exception:
                 raise ValueError('The object contains invalid PlayItem data!')
