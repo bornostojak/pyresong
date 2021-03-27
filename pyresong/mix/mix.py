@@ -1,6 +1,6 @@
 from datetime import datetime as dt
 from datetime import timedelta
-from .playitem import PlayItem
+from ..playitem import PlayItem
 from .mixitem import MixItem
 import collections
 import xml.etree.ElementTree as ElementTree

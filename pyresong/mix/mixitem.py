@@ -1,14 +1,17 @@
 from datetime import datetime as dt
 from datetime import timedelta
-from .playitem import PlayItem
+from ..playitem import PlayItem
 from xml.etree import ElementTree as ElementTree
 
 class MixItem(PlayItem):
     """ Object containing data referenced while mixing PlayItems together. """
+    def __new__(cls, *args, **kwargs):
+        return super(MixItem, cls).__new__(cls, *args, **kwargs)
 
-    def __init__(self, playitem):
+    def __init__(self, playitem=None):
         """ Initialize a MixItem by giving it a PlayItem to reference from. """
-        super().__init__(playitem)
+        if playitem:
+            super(MixItem, self).__init__(playitem)
         
 
 

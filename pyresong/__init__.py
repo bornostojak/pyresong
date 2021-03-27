@@ -6,9 +6,11 @@ With includedd features like loading simple xml playlists and data conversion su
 """
 
 from .playitem import PlayItem
-from .mixitem import MixItem, Transition
 from .playlist import PlayList
 from .loadsave import load, save
+
+TEST_ITEM=PlayItem()
+TEST_ITEM.Naziv='Monke'
 
 
 __author__ = "Borno Stojak (borno.stojak@gmail.com)"

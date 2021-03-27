@@ -69,6 +69,17 @@ class PlayList(object):
     def __getitem__(self, key):
         return self.Items[key]
     
+    def __add__(self, b):
+        """Combine tow lists into a new one with addition."""
+        temp=PlayList()
+        temp.Items=[*self.clone().Items,*b.clone().Items]
+        return temp
+
+    def clone(self):
+        """Clone the list."""
+        temp=PlayList()
+        temp.Items = [f.clone() for f in self.Items]
+
     def find(self, string, caps_sensitive=False, fragment_activator=DEFAULT_FRAGMENT_ACTIVATOR):
         """
         Find all items in the playlist if the string can be found in its Naziv, Autor, Album, Info or PathName.

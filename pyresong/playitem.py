@@ -4,6 +4,7 @@ from datetime import timedelta
 from collections import OrderedDict
 from json import dumps
 from os.path import isfile, splitext, basename
+from functools import reduce
 import mutagen
 
 
@@ -18,9 +19,8 @@ class PlayItem(object):
         Create the PlayItem instance and populate the default values.
         """
 
-        instance = super(PlayItem, cls).__new__(cls, *args, **kwargs)
+        instance = super(PlayItem, cls).__new__(cls)
         instance.__dict__ = {'ID':-2,'Naziv':'','Autor':'','Album':'','Info':'','Tip':0,'Color':hex(0x9),'NaKanalu':0,'PathName':'','ItemType':3,'StartCue':0,'EndCue':0,'Pocetak':0,'Trajanje':0,'Vrijeme':Date.now(),'StvarnoVrijemePocetka':Date.min,'VrijemeMinTermin':Date.min,'VrijemeMaxTermin':Date.fromtimestamp(0),'PrviU_Bloku':0,'ZadnjiU_Bloku':0,'JediniU_Bloku':0,'FiksniU_Terminu':0,'Reklama':False,'WaveIn':False,'SoftIn':0,'SoftOut':0,'Volume':65536,'OriginalStartCue':0,'OriginalEndCue':0,'OriginalPocetak':0}
-        
         return instance
 
     def __init__(self, data=None):
@@ -29,14 +29,16 @@ class PlayItem(object):
         Can also parse from a dictionary of its items.
 
         """
-        
-        if type(data) is OrderedDict or type(data) is PlayItem: data = dict(data)
-        if type(data) is dict :
+        if type(data) is PlayItem:
+            data=data.clone()
+        if data:
             try:
-                self.__dict__ = {key:val for key,val in tuple(data.items()) if key in self.__dict__.keys()}
+                DATA = dict(data)
+                DATA_KEYS = DATA.keys()
+                self.__dict__ = {**self.__dict__, **{key:val for key,val in dict(data).items() if key in self.__dict__}}
+                self._convert_attributes()
             except Exception:
                 raise ValueError('The object contains invalid PlayItem data!')
-            self._convert_attributes()
 
     def __str__(self):
         """
@@ -87,6 +89,10 @@ class PlayItem(object):
                     #val = val.replace('&', '&amp;')  #fixes issue with win paths
             self.__dict__[key] = val
 
+    def clone(self):
+        temp=PlayItem()
+        temp.__dict__ = dict(dict(self))
+        return temp
 
     @property
     def Duration(self):
