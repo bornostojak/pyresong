@@ -35,7 +35,7 @@ class PlayItem(object):
             try:
                 DATA = dict(data)
                 DATA_KEYS = DATA.keys()
-                self.__dict__ = {**self.__dict__, **{key:val for key,val in dict(data).items() if key in self.__dict__}}
+                self.__dict__= {key: DATA[key] if key in DATA_KEYS else val for key,val in self.__dict__.items()}
                 self._convert_attributes()
             except Exception:
                 raise ValueError('The object contains invalid PlayItem data!')
