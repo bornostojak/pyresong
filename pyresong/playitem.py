@@ -15,12 +15,9 @@ class PlayItem(object):
     """
 
     def __new__(cls, *args, **kwargs):
-        """
-        Create the PlayItem instance and populate the default values.
-        """
-
+        """Create the PlayItem instance and populate the default values."""
         instance = super(PlayItem, cls).__new__(cls)
-        instance.__dict__ = {'ID':-2,'Naziv':'','Autor':'','Album':'','Info':'','Tip':0,'Color':hex(0x9),'NaKanalu':0,'PathName':'','ItemType':3,'StartCue':0,'EndCue':0,'Pocetak':0,'Trajanje':0,'Vrijeme':Date.now(),'StvarnoVrijemePocetka':Date.min,'VrijemeMinTermin':Date.min,'VrijemeMaxTermin':Date.fromtimestamp(0),'PrviU_Bloku':0,'ZadnjiU_Bloku':0,'JediniU_Bloku':0,'FiksniU_Terminu':0,'Reklama':False,'WaveIn':False,'SoftIn':0,'SoftOut':0,'Volume':65536,'OriginalStartCue':0,'OriginalEndCue':0,'OriginalPocetak':0}
+        instance.__dict__ = {'ID':-2,'Naziv':'','Autor':'','Album':'','Info':'','Tip':0,'Color':hex(0x9),'NaKanalu':0,'PathName':'','ItemType':3,'StartCue':0,'EndCue':0,'Pocetak':0,'Trajanje':0,'Vrijeme':Date.now(),'StvarnoVrijemePocetka':Date.min,'VrijemeMinTermin':Date.min,'VrijemeMaxTermin':Date.fromtimestamp(0),'PrviU_Bloku':0,'ZadnjiU_Bloku':0,'JediniU_Bloku':0,'FiksniU_Terminu':0,'Reklama':False,'WaveIn':False,'SoftIn':0,'SoftOut':0,'Volume':65536,'OriginalStartCue':0,'OriginalEndCue':0,'OriginalPocetak':0, 'OriginalTrajanje':0}
         return instance
 
     def __init__(self, data=None):
@@ -30,20 +27,10 @@ class PlayItem(object):
 
         """
         if data:
-            data=dict(data)
-            if set(data) - set(self.__dict__):
-                raise ValueError('The data passed to the item is invalid')
-            try:
-                self.__dict__.update({key:val for key,val in dict(data).items() if key in self.__dict__})
-                self._convert_attributes()
-            except Exception:
-                raise ValueError('The object contains invalid PlayItem data!')
+            self.__update(data)
 
     def __str__(self):
-        """
-        Returns a XML string representation of the PlayItem.
-        """
-
+        """Returns a XML string representation of the PlayItem."""
         try:
             return "<PlayItem>\n"+''.join([f"<{str(key)}>{str(val).replace('&', '&amp;')}</{str(key)}>\n" if str(val).lower() != "none" else f"<{str(key)}/>\n" for key, val in self.__dict__.items()])+"</PlayItem>".replace('\\', '\\\\')
         except Exception:
@@ -55,25 +42,20 @@ class PlayItem(object):
 
         'Author Name - Song Title @ Time Of Start'
         """
-
         try:
             return f"{self.Naziv+' by '+self.Autor if self.Autor else self.Naziv} @ {self.Vrijeme}"
         except Exception:
             return "Empty item."
 
     def keys(self):
-        """
-        Returns all keys for given PlayItem.
-        """
+        """Returns all keys for given PlayItem."""
         return self.__dict__.keys()
 
     def __getitem__(self, key):
-        """
-        Returns the value for the given key.
-        """
+        """Returns the value for the given key."""
         return self.__dict__[key]
     
-    def _convert_attributes(self):
+    def __convert_attributes(self):
         for key, val in self.__dict__.items():
             try:
                 if 'Vrijeme'.lower() in key.lower():
@@ -88,10 +70,19 @@ class PlayItem(object):
                     #val = val.replace('&', '&amp;')  #fixes issue with win paths
             self.__dict__[key] = val
 
+    def __update(self, data):
+        data=dict(data)
+        if set(data) - set(self.__dict__):
+            raise ValueError('The data passed to the item is invalid')
+        try:
+            self.__dict__.update({key:val for key,val in dict(data).items() if key in self.__dict__})
+            self.__convert_attributes()
+        except Exception:
+            raise ValueError('The object contains invalid PlayItem data!')
+
     def clone(self):
-        temp=PlayItem()
-        temp.__dict__ = dict(dict(self))
-        return temp
+        """Clone the item into separate item."""
+        return PlayItem.fromdict(dict(self))
 
     @property
     def Duration(self):
@@ -107,9 +98,7 @@ class PlayItem(object):
     
     @property
     def EndOfSongTime(self):
-        """
-        Returns the datetime data indicating when to pull the next item in the list.
-        """
+        """Returns the datetime data indicating when to pull the next item in the list."""
         return self.Vrijeme+self.Duration
 
     @classmethod
@@ -120,20 +109,20 @@ class PlayItem(object):
         Will raise KeyError it data passed contains incorrect or missing values!
 
         """
-        if xmlitem.__class__ is str:
+        if type(xmlitem) is str:
             try:
                 xmlitem = ElementTree.fromstring(xmlitem)
             except Exception:
                 raise TypeError('The XML string doesn\'t contain valid PlayItem data')
 
-        if xmlitem.__class__ is not ElementTree.Element:
+        if type(xmlitem) is not ElementTree.Element:
             raise TypeError('The object is not a valid xml.etree.ElementTree.Element object!')
 
         try:
             self = cls()
             for i in range(len(xmlitem)):
                 self.__dict__[xmlitem[i].tag] = xmlitem[i].text
-            self._convert_attributes()
+            self.__convert_attributes()
                 
         except Exception:
             raise KeyError('The PlayItem values are incorrect or missing!')
@@ -141,14 +130,10 @@ class PlayItem(object):
     
     @classmethod
     def fromdict(cls, data):
-        """
-        Create a PlayItem from a dictionary object containing PlayItem data.
-        Will raise TypeError it value passed is not of dict or collections.OrderedDict!
-        Will raise KeyError it data passed contains incorrect or missing values!
-
-        """
-
-        if data.__class__ is not dict and data.__class__ is not OrderedDict:
+        """Create a PlayItem from a dictionary object containing PlayItem data."""
+        try:
+            data = dict(data)
+        except Exception:
             raise TypeError('The object is not a valid dict or collections.OrderedDict object!')
 
         if 'PlayItem' in data:
@@ -156,9 +141,7 @@ class PlayItem(object):
 
         try:
             self = cls()
-            for key in self.__dict__.keys():
-                self.__dict__[key] = data[key]
-            self._convert_attributes()
+            self.__update(data)
         except Exception:
             raise KeyError('The PlayItem values are incorrect or missing!')
         
@@ -185,17 +168,13 @@ class PlayItem(object):
 
     @staticmethod
     def tojson(playitem):
-        """
-        Returns a JSON string representation of the PlayItem.
-        """
-        return dumps({ str(key): str(val) for key, val in playitem.__dict__.items()})
+        """Returns a JSON string representation of the PlayItem."""
+        return dumps({ str(key): str(val).replace('&', '&amp;') for key, val in playitem.__dict__.items()})
 
     @staticmethod
     def toxml(playitem):
-        """
-        Returns a JSON string representation of the PlayItem.
-        """
-        return str(playitem)
+        """Returns a xml Element for the given PlayItem."""
+        return ElementTree.fromstring(str(playitem))
         
 
 class Date(dt):

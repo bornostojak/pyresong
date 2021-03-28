@@ -21,16 +21,11 @@ class PlayList(object):
         return instance
 
     def __init__(self):
-        """
-        Initialize an empty PlayList object.
-        """
+        """Initialize an empty PlayList object."""
         pass
 
     def __str__(self):
-        """
-        Returns a XML string representation of the PlayList.
-        """
-
+        """Returns a XML string representation of the PlayList."""
         tmp = ""
         try:
             for i in self.Items:
@@ -47,12 +42,9 @@ class PlayList(object):
         """
 
         try:
-            return f"Playlist from {self.Items[0].Vrijeme} to {self.Items[len(self.Items)-1].EndOfSongTime}"
+            return "Playlist from {0} to {1}".format(self.Items[0].Vrijeme, self.Items[-1].EndOfSongTime) if self.Items else "Empty Playlist."
         except Exception:
-            try:
-                return f"Playlist from {self.Items[0].Vrijeme}"
-            except Exception:
-                return "Empty playlist."
+            return "Empty playlist."
      
     def __iter__(self):
         self._index = 0
