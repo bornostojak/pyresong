@@ -4,7 +4,6 @@ from datetime import timedelta
 from collections import OrderedDict
 from json import dumps
 from os.path import isfile, splitext, basename
-from functools import reduce
 import mutagen
 import re
 
