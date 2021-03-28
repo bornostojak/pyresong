@@ -5,7 +5,7 @@ This is a python package support for the PyreSong radio automation software suit
 With includedd features like loading simple xml playlists and data conversion suport.
 """
 
-from .playitem import PlayItem
+from .playitem import PlayItem, DateTime
 from .playlist import PlayList
 from .loadsave import load, save
 

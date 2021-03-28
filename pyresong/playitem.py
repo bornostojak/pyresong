@@ -6,6 +6,7 @@ from json import dumps
 from os.path import isfile, splitext, basename
 from functools import reduce
 import mutagen
+import re
 
 
 class PlayItem(object):
@@ -17,7 +18,7 @@ class PlayItem(object):
     def __new__(cls, *args, **kwargs):
         """Create the PlayItem instance and populate the default values."""
         instance = super(PlayItem, cls).__new__(cls)
-        instance.__dict__ = {'ID':-2,'Naziv':'','Autor':'','Album':'','Info':'','Tip':0,'Color':hex(0x9),'NaKanalu':0,'PathName':'','ItemType':3,'StartCue':0,'EndCue':0,'Pocetak':0,'Trajanje':0,'Vrijeme':Date.now(),'StvarnoVrijemePocetka':Date.min,'VrijemeMinTermin':Date.min,'VrijemeMaxTermin':Date.fromtimestamp(0),'PrviU_Bloku':0,'ZadnjiU_Bloku':0,'JediniU_Bloku':0,'FiksniU_Terminu':0,'Reklama':False,'WaveIn':False,'SoftIn':0,'SoftOut':0,'Volume':65536,'OriginalStartCue':0,'OriginalEndCue':0,'OriginalPocetak':0, 'OriginalTrajanje':0}
+        instance.__dict__ = {'ID':-2,'Naziv':'','Autor':'','Album':'','Info':'','Tip':0,'Color':hex(0x9),'NaKanalu':0,'PathName':'','ItemType':3,'StartCue':0,'EndCue':0,'Pocetak':0,'Trajanje':0,'Vrijeme':DateTime.now(),'StvarnoVrijemePocetka':DateTime.min,'VrijemeMinTermin':DateTime.min,'VrijemeMaxTermin':DateTime.fromtimestamp(0),'PrviU_Bloku':0,'ZadnjiU_Bloku':0,'JediniU_Bloku':0,'FiksniU_Terminu':0,'Reklama':False,'WaveIn':False,'SoftIn':0,'SoftOut':0,'Volume':65536,'OriginalStartCue':0,'OriginalEndCue':0,'OriginalPocetak':0, 'OriginalTrajanje':0}
         return instance
 
     def __init__(self, data=None):
@@ -59,13 +60,14 @@ class PlayItem(object):
         for key, val in self.__dict__.items():
             try:
                 if 'Vrijeme'.lower() in key.lower():
-                    val = Date.fromisoformat(val.replace('Z', ''))
+                    val = DateTime.legacyisoformatparser(val)
                 elif 'Color' == key:
                     continue
                 elif str(val).lower() != "none":
                     val = eval(val)
-            except Exception:
-                pass
+            except Exception as e:
+                if type(e) is ValueError:
+                    raise e
                 #if type(val) is str:
                     #val = val.replace('&', '&amp;')  #fixes issue with win paths
             self.__dict__[key] = val
@@ -177,9 +179,17 @@ class PlayItem(object):
         return ElementTree.fromstring(str(playitem))
         
 
-class Date(dt):
+class DateTime(dt):
     def __str__(self):
         return self.isoformat()
+    
+    @staticmethod
+    def legacyisoformatparser(string):
+        parser=re.compile(r'(\d{4})-(\d{2})-(\d{2})(\w?)(\d{0,2})(:|\.?)(\d{0,2})(:|\.?)(\d{0,2})(:|\.?)(\d{6}|\d{0,3})(\d*)Z?(\+?.*)')
+        if parser.match(string):
+            return DateTime.fromisoformat(parser.sub(r'\1-\2-\3\4\5\6\7\8\9\10\11\13', string))
+        else:
+            raise ValueError('The time string is wrongly formatted')
 
-Date.min = Date.fromtimestamp(0)
-Date.max = Date(9999,12,31)
+DateTime.min = DateTime.fromtimestamp(0)
+DateTime.max = DateTime(9999,12,31)

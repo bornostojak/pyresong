@@ -4,7 +4,7 @@ from datetime import datetime as dt
 from datetime import timedelta
 from .playitem import PlayItem
 from os.path import isfile
-
+from functools import reduce
 
 
 class PlayList(object):
@@ -16,13 +16,15 @@ class PlayList(object):
 
     def __new__(cls, *args, **kwargs):
         """ Create an empty PlayList instance."""
-        instance = super(PlayList, cls).__new__(cls, *args, **kwargs)
+        instance = super(PlayList, cls).__new__(cls)
         instance.Items = []
         return instance
 
-    def __init__(self):
+    def __init__(self, items=None):
         """Initialize an empty PlayList object."""
-        pass
+        if type(items) is list and reduce(lambda x,y: x and y, [type(u) is PlayItem for u in items]):
+            self.Items = items
+            
 
     def __str__(self):
         """Returns a XML string representation of the PlayList."""
