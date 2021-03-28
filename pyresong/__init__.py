@@ -9,9 +9,6 @@ from .playitem import PlayItem
 from .playlist import PlayList
 from .loadsave import load, save
 
-TEST_ITEM=PlayItem()
-TEST_ITEM.Naziv='Monke'
-
 
 __author__ = "Borno Stojak (borno.stojak@gmail.com)"
 __credits__ = ["Borno Stojak"]
