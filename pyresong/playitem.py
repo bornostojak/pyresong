@@ -179,8 +179,9 @@ class PlayItem(object):
         
 
 class DateTime(dt):
+    UseTimeZoneStamp=True
     def __str__(self):
-        return self.isoformat()
+        return self.astimezone().isoformat() if DateTime.UseTimeZoneStamp else self.isoformat() 
     
     @staticmethod
     def legacyisoformatparser(string):
@@ -192,3 +193,4 @@ class DateTime(dt):
 
 DateTime.min = DateTime.fromtimestamp(0)
 DateTime.max = DateTime(9999,12,31)
+
