@@ -181,7 +181,10 @@ class PlayItem(object):
 class DateTime(dt):
     UseTimeZoneStamp=True
     def __str__(self):
-        return self.astimezone().isoformat() if DateTime.UseTimeZoneStamp else self.isoformat() 
+        try:
+            return self.astimezone().isoformat() if DateTime.UseTimeZoneStamp else self.isoformat() 
+        except Exception:
+            return self.isoformat() 
     
     @staticmethod
     def legacyisoformatparser(string):
