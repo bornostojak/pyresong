@@ -73,6 +73,7 @@ class PlayList(object):
         """Clone the list."""
         temp=PlayList()
         temp.Items = [f.clone() for f in self.Items]
+        return temp
 
     def find(self, string, caps_sensitive=False, fragment_activator=DEFAULT_FRAGMENT_ACTIVATOR):
         """
@@ -169,19 +170,16 @@ class PlayList(object):
 
         """
 
-        if data.__class__ is not dict and data.__class__ is not collections.OrderedDict:
+        if type(data) is not dict and type(data) is not collections.OrderedDict:
             raise TypeError('The object is not a valid dict or collections.OrderedDict object!')
 
         self = cls()
 
-        if 'PlayList' not in data:
-            raise ValueError('data does not contain valid playlist data!')
-        if 'PlayItem' in data['PlayList']:
+        if 'Items' in data:
+            self.Items = [PlayItem.fromdict(item) for item in data['Items']]
+        elif 'PlayList' in data:
             self.Items = [PlayItem.fromdict(item) for item in data['PlayList']['PlayItem']]
-        elif data['PlayList'] is list:
-            self.Items = [PlayItem.fromdict(item) for item in data['PlayList']]
 
-        self.Items = [PlayItem.fromdict(item) for item in data['PlayList']['PlayItem']]
         return self
 
     @classmethod
