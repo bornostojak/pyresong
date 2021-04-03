@@ -10,7 +10,7 @@ if plsys().lower() == 'windows':
 def load(path):
     """Load a playlist from a file."""
     if not isfile(path):
-        raise FileNotFoundError('The file could not be found')
+        raise FileNotFoundError('The file could not be found => '+path)
     pl = None
     try:
         with open(path, 'rb') as file:
