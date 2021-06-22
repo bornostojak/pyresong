@@ -44,11 +44,7 @@ def save(playlist, path, overwrite=False):
     if isfile(path) and not overwrite:
         raise FileExistsError('The file already exists. User "overwrite=True to overwrite it."')
 
-    prev=None
-    for item in playlist:
-        if prev:
-            item.Vrijeme = prev.EndOfSongTime
-        prev = item
+    playlist.update_time_of_play()
     
     with open(path, 'wb') as file:
         file.write(str(playlist).encode('windows-1250'))

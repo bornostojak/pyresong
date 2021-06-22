@@ -22,7 +22,7 @@ class PlayList(object):
 
     def __init__(self, items=None):
         """Initialize an empty PlayList object."""
-        if type(items) is list and reduce(lambda x,y: x and y, [type(u) is PlayItem for u in items]):
+        if items and type(items) is list and reduce(lambda x,y: x and y, [type(u) is PlayItem for u in items]):
             self.Items = items
             
 
@@ -141,6 +141,11 @@ class PlayList(object):
         for index in self.find_iter(string, caps_sensitive, fragment_activator):
             yield self.Items[index]
 
+
+    def update_time_of_play(self):
+        for i in range(len(self.Items)-1):
+            self.Items[i+1].Vrijeme = self.Items[i].EndOfSongTime
+
     @classmethod
     def fromxml(cls, xmltree):
         """
@@ -215,6 +220,3 @@ class PlayList(object):
         Returns a XML string representation of the PlayList.
         """
         return str(playlist)
-
-
-
