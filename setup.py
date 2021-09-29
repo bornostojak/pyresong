@@ -1,23 +1,42 @@
-import setuptools
+#!/usr/bin/env python
 
-with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
+"""The setup script."""
 
-setuptools.setup(
-    name="pyresong-bornostojak", # Replace with your own username
-    version="0.0.1",
+from setuptools import setup, find_packages
+
+with open('README.rst') as readme_file:
+    readme = readme_file.read()
+
+with open('HISTORY.rst') as history_file:
+    history = history_file.read()
+
+requirements = [ ]
+
+test_requirements = ['mutagen>=0.4.0']
+
+setup(
     author="Borno Stojak",
-    author_email="borno.stojak@gmail.com",
-    description="PyreSong radio automation python package",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/malebra/chakya",
-    classifiers=[
-        "Development status :: 0 :: Development",
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-    ],
-    packages=setuptools.find_packages(),
+    author_email='borno.stojak@gmail.com',
     python_requires='>=3.6',
+    classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
+        'Intended Audience :: Developers',
+        'Natural Language :: English',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+    ],
+    description="A radio automation software package for python",
+    install_requires=requirements,
+    long_description=readme + '\n\n' + history,
+    include_package_data=True,
+    keywords='pyresong',
+    name='pyresong',
+    packages=find_packages(include=['pyresong', 'pyresong.*']),
+    test_suite='tests',
+    tests_require=test_requirements,
+    url='https://github.com/bornostojak/pyresong',
+    version='0.0.2',
+    zip_safe=False,
 )
